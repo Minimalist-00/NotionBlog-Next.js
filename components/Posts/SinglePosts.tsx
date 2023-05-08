@@ -1,17 +1,33 @@
+import Link from "next/link";
 import React from "react";
 
-type BlogInfo = { //型を定義
+type BlogInfo = {
+  //型を定義
   title: string;
   description: string;
   date: string;
-  tag: string;
+  tags: string[];
   slug: string;
 };
 
-const SinglePosts = (props: BlogInfo) => { //BlogInfoという型を使用
-  const { title, description, date, tag, slug } = props; //propsオブジェクトからそれぞれを取り出している
+const SinglePosts = (props: BlogInfo) => {
+  //BlogInfoという型を使用
+  const { title, description, date, tags, slug } = props; //propsオブジェクトからそれぞれを取り出している
 
-  return <div>{title}</div>;
+  return (
+    <Link className="block text-ellipsis" href={`/posts/${slug}`}>
+      <section className="bg-gray-600 text-gray-100 p-4 mb-8 rounded-lg">
+        <div className="flex">
+          <h2>{title}</h2>
+          {tags.map((tag) => (
+            <span className="mx-1 px-2 bg-gray-300 rounded-xl text-gray-700">{tag}</span>
+          ))}
+        </div>
+        <div>{description}</div>
+        <div>{date}</div>
+      </section>
+    </Link>
+  );
 };
 
 export default SinglePosts;
