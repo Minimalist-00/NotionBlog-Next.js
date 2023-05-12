@@ -1,16 +1,10 @@
+// import { BlogInfo } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-type BlogInfo = {
-  //型を定義
-  title: string;
-  description: string;
-  date: string;
-  tags: string[];
-  slug: string;
-};
 
-const SinglePosts = (props: BlogInfo) => {
+
+const SinglePosts = (props) => {
   //BlogInfoという型を使用
   const { title, description, date, tags, slug } = props; //propsオブジェクトからそれぞれを取り出している
 

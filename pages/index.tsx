@@ -1,9 +1,10 @@
 import SinglePosts from "@/components/Posts/SinglePosts";
 import { getAllPosts } from "@/lib/notionAPI";
+// import { Post } from "@/types";
 import Head from "next/head";
 
 export const getStaticProps = async () => {
-  const allPosts = await getAllPosts();
+  const allPosts = await getAllPosts(); //notionAPI.tsxから関数呼び出し
   console.log("posts:", allPosts);
   return {
     props: {
@@ -26,7 +27,7 @@ export default function Home({ allPosts }) {
       <main className="container w-full mt-16">
         <h1 className="text-5xl font-medium mb-16 text-center">トップページです！</h1>
         {allPosts.map((post) => (
-          <div className="mx-4">
+          <div className="mx-4" key={post.id}>
             <SinglePosts
               title={post.title}
               description={post.description}
