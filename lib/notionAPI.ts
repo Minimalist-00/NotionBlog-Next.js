@@ -35,7 +35,7 @@ const getPageMetaData = (post) => {
 // 引数のslug(URL)とデータベースのslugが一致するときのみにデータを取得する関数
 export const getSinglePost = async (slug) => {
   //slugという引数をとる（URL）
-  const res = await notion.databases.query({
+  const response = await notion.databases.query({
     //データベースに問い合わせ
     database_id: process.env.NOTION_DATABASE_ID,
     filter: {
@@ -47,7 +47,10 @@ export const getSinglePost = async (slug) => {
       },
     },
   });
-  const page = res.results[0];
+  const page = response.results[0];
+  const metadata = getPageMetaData(page);
+  console.log(metadata);
+  console.log("見えてる？");
 
   return {
     page,

@@ -1,18 +1,25 @@
 import React from "react";
 import { getSinglePost } from "@/lib/notionAPI";
 
-//動的ルーティングのページのため、GetStaticPathを指定
+// 動的ルーティングのページのため、GetStaticPathを指定
 export const getStaticPath = async () => {
-
+  return {
+    paths: [
+      { params: { slug: "first-blog" } },
+      { params: { slug: "second-blog" } },
+      { params: { slug: "third-blog" } },
+    ],
+    fallback: "blocking",
+  };
 };
 
 // ISRで更新
-export const getStaticProps = async ({params}) => {
-  const allPosts = await getSinglePost(params.slug);
+export const getStaticProps = async ({ params }) => {
+  const post = await getSinglePost(params.slug);
 
   return {
     props: {
-      allPosts,
+      post,
     },
     revalidate: 60 * 60,
   };
