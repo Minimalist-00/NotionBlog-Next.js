@@ -2,8 +2,6 @@
 import Link from "next/link";
 import React from "react";
 
-
-
 const SinglePosts = (props) => {
   //BlogInfoという型を使用
   const { title, description, date, tags, slug } = props; //propsオブジェクトからそれぞれを取り出している
@@ -14,7 +12,9 @@ const SinglePosts = (props) => {
         <div className="flex">
           <h2>{title}</h2>
           {tags.map((tag) => (
-            <span className="mx-1 px-2 bg-gray-300 rounded-xl text-gray-700">{tag}</span>
+            <span className="mx-1 px-2 bg-gray-300 rounded-xl text-gray-700">
+              {tag}
+            </span>
           ))}
         </div>
         <div>{description}</div>

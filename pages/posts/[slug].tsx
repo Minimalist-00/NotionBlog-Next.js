@@ -2,7 +2,7 @@ import React from "react";
 import { getSinglePost } from "@/lib/notionAPI";
 
 // 動的ルーティングのページのため、GetStaticPathを指定
-export const getStaticPath = async () => {
+export const getStaticPaths = async () => {
   return {
     paths: [
       { params: { slug: "first-blog" } },
