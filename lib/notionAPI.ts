@@ -1,9 +1,12 @@
 // import { Post } from "@/types";
 import { Client } from "@notionhq/client";
+import { NotionToMarkdown } from "notion-to-md";
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
+
+const n2m = new NotionToMarkdown({ notionClient: notion });
 
 // データベースより、全ての投稿データ（プロパティ）を取得する関数
 export const getAllPosts = async () => {
@@ -49,10 +52,20 @@ export const getSinglePost = async (slug) => {
   });
   const page = response.results[0];
   const metadata = getPageMetaData(page);
-  console.log(metadata);
-  console.log("見えてる？");
+  // console.log(metadata);
+  const mdBlocks = await n2m.pageToMarkdown(page.id);
+  const mdString = n2m.toMarkdownString(mdBlocks);
+  console.log(mdString);
 
   return {
-    page,
+    metadata,
+    markdown: mdString,
   };
+};
+
+// Topページに表示する記事の取得
+export const getPostsTopPage = async (getBlogs: number) => {
+  const allPosts = await getAllPosts();
+  const topPosts = allPosts.slice(0, getBlogs); //0番目から4つ表示する
+  return topPosts;
 };

@@ -1,12 +1,16 @@
 import SinglePosts from "@/components/Posts/SinglePosts";
-import { getAllPosts, getPostsTopPage } from "@/lib/notionAPI";
-import { GetStaticProps } from "next";
-// import { Post } from "@/types";
+import { getPostsTopPage } from "@/lib/notionAPI";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import Link from "next/link";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [{ params: { page: "1" } }, { params: { page: "2" } }],
+    fallback: "blocking",
+  };
+};
 
 export const getStaticProps: GetStaticProps = async () => {
-  // const allPosts = await getAllPosts(); //notionAPI.tsxから関数呼び出し
   const topPosts = await getPostsTopPage(4);
 
   return {
@@ -17,7 +21,7 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default function Home({ topPosts }) {
+const BlogPageList = ({ topPosts }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -42,10 +46,9 @@ export default function Home({ topPosts }) {
             />
           </div>
         ))}
-        <Link href="posts/page/1" className="font-bold block text-right">
-          もっと見る
-        </Link>
       </main>
     </div>
   );
-}
+};
+
+export default BlogPageList;

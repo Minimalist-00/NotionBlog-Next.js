@@ -1,20 +1,24 @@
 import React from "react";
-import { getSinglePost } from "@/lib/notionAPI";
+import { getAllPosts, getSinglePost } from "@/lib/notionAPI";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import Link from "next/link";
+import { GetStaticPaths, GetStaticProps } from "next";
 
 // 動的ルーティングのページのため、GetStaticPathを指定
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const allPosts = await getAllPosts();
+  const paths = allPosts.map(({ slug }) => ({ params: { slug } }));
+
   return {
-    paths: [
-      { params: { slug: "first-blog" } },
-      { params: { slug: "second-blog" } },
-      { params: { slug: "third-blog" } },
-    ],
+    paths: paths,
     fallback: "blocking",
   };
 };
 
 // ISRで更新
-export const getStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const post = await getSinglePost(params.slug);
 
   return {
@@ -25,17 +29,41 @@ export const getStaticProps = async ({ params }) => {
   };
 };
 
-const Post = () => {
+const Post = ({ post }) => {
   return (
     <section className="container">
       <div>
         <h1>詳細記事ページ</h1>
-        <h2 className="border-b-2 ">記事のタイトル</h2>
-        <p>タグ</p>
-        <p>投稿日</p>
-        <p>
-          テキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入りますテキストが入ります
-        </p>
+        <h2 className="border-b-2 ">{post.metadata.title}</h2>
+        {post.metadata.tags.map((tag: string) => (
+          <p>{tag}</p>
+        ))}
+        <p>{post.metadata.data}</p>
+        <div>
+          <ReactMarkdown
+            children={post.markdown.parent}
+            components={{
+              code({ node, inline, className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || "");
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    {...props}
+                    children={String(children).replace(/\n$/, "")}
+                    style={vscDarkPlus}
+                    language={match[1]}
+                    PreTag="div"
+                  />
+                ) : (
+                  <code {...props} className={className}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          ></ReactMarkdown>
+        </div>
+
+        <Link href="/">ホームへ</Link>
       </div>
     </section>
   );
