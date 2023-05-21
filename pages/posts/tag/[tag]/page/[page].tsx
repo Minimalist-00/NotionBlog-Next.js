@@ -1,14 +1,29 @@
 import Pagination from "@/components/Pagination";
 import SinglePosts from "@/components/Posts/SinglePosts";
 import {
-  getNumberOfPages,
-  getPostsByPage,
-  getPostsTopPage,
+  getAllTags,
+  getNumberOfPagesByTag,
+  getPostsByTag,
 } from "@/lib/notionAPI";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const allTags = await getAllTags();
+  let params = [];
+
+  await Promise.all(
+    allTags.map((tag: string) => {
+      return getNumberOfPagesByTag(tag).then((numberOfPageByTag: number) => {
+        for (let i = 1; i <= numberOfPageByTag; i++) {
+          params.push({ params: { tag: tag, page: i.toString() } });
+        }
+      });
+    })
+  );
+
+  console.log(params);
+
   return {
     paths: [{ params: { tag: "blog", page: "1" } }],
     fallback: "blocking",
@@ -16,22 +31,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const currentPage = context.params?.page;
-  const postsByPage = await getPostsByPage(
-    parseInt(currentPage.toString(), 10) //int型からstring型へ変換 10進数を指定している
+  const currentPage: string = context.params?.page.toString();
+  const currentTag: string = context.params?.tag.toString();
+
+  const upperCaseCurrentTag =
+    currentTag.charAt(0).toUpperCase() + currentTag.slice(1);
+
+  const posts = await getPostsByTag(
+    upperCaseCurrentTag,
+    parseInt(currentPage, 10)
   );
-  const numberOfPage = await getNumberOfPages();
 
   return {
     props: {
-      postsByPage,
-      numberOfPage,
+      posts,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogTagPageList = ({ postsByPage, numberOfPage }) => {
+const BlogTagPageList = ({ numberOfPage, posts }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -46,7 +65,7 @@ const BlogTagPageList = ({ postsByPage, numberOfPage }) => {
           <h1 className="text-5xl font-medium mb-16 text-center">
             もっと見るページです！
           </h1>
-          {postsByPage.map((post) => (
+          {posts.map((post) => (
             <div className="mx-4" key={post.id}>
               <SinglePosts
                 title={post.title}
