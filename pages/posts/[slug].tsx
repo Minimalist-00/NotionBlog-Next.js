@@ -5,6 +5,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import Link from "next/link";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { CodeProps } from "react-markdown/lib/ast-to-react";
 
 // 動的ルーティングのページのため、GetStaticPathを指定
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -35,15 +36,15 @@ const Post = ({ post }) => {
       <div>
         <h1>詳細記事ページ</h1>
         <h2 className="border-b-2 ">{post.metadata.title}</h2>
-        {post.metadata.tags.map((tag: string) => (
-          <p>{tag}</p>
+        {post.metadata.tags.map((tag: string, index: number) => (
+          <p key={index}>{tag}</p>
         ))}
         <p>{post.metadata.data}</p>
         <div>
           <ReactMarkdown
             children={post.markdown.parent}
             components={{
-              code({ node, inline, className, children, ...props }) {
+              code({ node, inline, className, children, ...props }: CodeProps) {
                 const match = /language-(\w+)/.exec(className || "");
                 return !inline && match ? (
                   <SyntaxHighlighter

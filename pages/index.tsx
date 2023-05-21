@@ -39,6 +39,7 @@ export default function Home({ topPosts }) {
               date={post.date}
               tags={post.tags}
               slug={post.slug}
+              isSeeMorePage={false}
             />
           </div>
         ))}

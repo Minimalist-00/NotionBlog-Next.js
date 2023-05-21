@@ -9,15 +9,8 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const numberOfPage = await getNumberOfPages();
-
-  let params = [];
-  for (let i = 1; i <= numberOfPage; i++) {
-    params.push({ params: { page: i.toString() } });
-  }
-
   return {
-    paths: params,
+    paths: [{ params: { tag: "blog", page: "1" } }],
     fallback: "blocking",
   };
 };
@@ -38,7 +31,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-const BlogPageList = ({ postsByPage, numberOfPage }) => {
+const BlogTagPageList = ({ postsByPage, numberOfPage }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -72,4 +65,4 @@ const BlogPageList = ({ postsByPage, numberOfPage }) => {
   );
 };
 
-export default BlogPageList;
+export default BlogTagPageList;

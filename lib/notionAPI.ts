@@ -1,4 +1,5 @@
 // import { Post } from "@/types";
+import { NUMBER_OF_POSTS_PER_PAGE } from "@/components/constants/constants";
 import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 
@@ -66,6 +67,29 @@ export const getSinglePost = async (slug) => {
 // Topページに表示する記事の取得
 export const getPostsTopPage = async (getBlogs: number) => {
   const allPosts = await getAllPosts();
-  const topPosts = allPosts.slice(0, getBlogs); //0番目から4つ表示する
+  const topPosts = allPosts.slice(0, getBlogs); //0番目から指定した件数だけ表示する
   return topPosts;
+};
+
+//ページ番号に応じた記事を取得
+export const getPostsByPage = async (page: number) => {
+  const allPosts = await getAllPosts();
+
+  const startIndex = (page - 1) * NUMBER_OF_POSTS_PER_PAGE;
+  const endIndex = startIndex + NUMBER_OF_POSTS_PER_PAGE;
+
+  return allPosts.slice(startIndex, endIndex);
+};
+
+//もっと見るページを動的に変更
+export const getNumberOfPages = async () => {
+  const allPosts = await getAllPosts();
+
+  return (
+    Math.floor(allPosts.length / NUMBER_OF_POSTS_PER_PAGE) + //少数を切る
+    (allPosts.length % NUMBER_OF_POSTS_PER_PAGE > //あまりが生じたとき1を足す
+    0
+      ? 1
+      : 0)
+  );
 };
