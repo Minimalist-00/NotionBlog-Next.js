@@ -14,6 +14,18 @@ export const getAllPosts = async () => {
   const posts = await notion.databases.query({
     //データベースに問い合わせ
     database_id: process.env.NOTION_DATABASE_ID,
+    filter: {
+      property: "Public",
+      status: {
+        equals: "公開",
+      },
+    },
+    sorts: [
+      {
+        property: "Date",
+        direction: "descending",
+      },
+    ],
   });
 
   const allPosts = posts.results; //必要な情報に絞ったデータを取得するためのresultsプロパティ
