@@ -1,5 +1,6 @@
 import SinglePosts from "@/components/Posts/SinglePosts";
-import { getAllPosts, getPostsTopPage } from "@/lib/notionAPI";
+import TagSearch from "@/components/TagSearch";
+import { getAllPosts, getAllTags, getPostsTopPage } from "@/lib/notionAPI";
 import { GetStaticProps } from "next";
 // import { Post } from "@/types";
 import Head from "next/head";
@@ -8,16 +9,18 @@ import Link from "next/link";
 export const getStaticProps: GetStaticProps = async () => {
   // const allPosts = await getAllPosts(); //notionAPI.tsxから関数呼び出し
   const topPosts = await getPostsTopPage(4);
+  const allTags = await getAllTags();
 
   return {
     props: {
       topPosts,
+      allTags,
     },
     revalidate: 60 * 60,
   };
 };
 
-export default function Home({ topPosts }) {
+export default function Home({ topPosts, allTags }) {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -46,6 +49,7 @@ export default function Home({ topPosts }) {
         <Link href="posts/page/1" className="font-bold block text-right">
           もっと見る
         </Link>
+        <TagSearch tags={allTags} />
       </main>
     </div>
   );
