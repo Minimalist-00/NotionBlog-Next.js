@@ -1,6 +1,8 @@
 import Pagination from "@/components/Pagination";
 import SinglePosts from "@/components/Posts/SinglePosts";
+import TagSearch from "@/components/TagSearch";
 import {
+  getAllTags,
   getNumberOfPages,
   getPostsByPage,
   getPostsTopPage,
@@ -28,17 +30,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     parseInt(currentPage.toString(), 10) //int型からstring型へ変換 10進数を指定している
   );
   const numberOfPage = await getNumberOfPages();
+  const allTags = await getAllTags();
 
   return {
     props: {
       postsByPage,
       numberOfPage,
+      allTags,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogPageList = ({ postsByPage, numberOfPage }) => {
+const BlogPageList = ({ postsByPage, numberOfPage, allTags }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -66,7 +70,8 @@ const BlogPageList = ({ postsByPage, numberOfPage }) => {
             </div>
           ))}
         </section>
-        <Pagination numberOfPage={numberOfPage} />
+        <Pagination numberOfPage={numberOfPage} tag={""} />
+        <TagSearch tags={allTags} />
       </main>
     </div>
   );

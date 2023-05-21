@@ -37,7 +37,9 @@ const Post = ({ post }) => {
         <h1>詳細記事ページ</h1>
         <h2 className="border-b-2 ">{post.metadata.title}</h2>
         {post.metadata.tags.map((tag: string, index: number) => (
-          <p key={index}>{tag}</p>
+          <p key={index}>
+            <Link href={`/posts/tag/${tag}/page/1`}>{tag}</Link>
+          </p>
         ))}
         <p>{post.metadata.data}</p>
         <div>
