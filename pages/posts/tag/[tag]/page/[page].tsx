@@ -12,6 +12,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const allTags = await getAllTags();
   let params = [];
 
+  //非同期処理を並列に処理できるようにする
   await Promise.all(
     allTags.map((tag: string) => {
       return getNumberOfPagesByTag(tag).then((numberOfPageByTag: number) => {
@@ -22,10 +23,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     })
   );
 
-  console.log(params);
-
   return {
-    paths: [{ params: { tag: "blog", page: "1" } }],
+    paths: params,
     fallback: "blocking",
   };
 };
@@ -42,15 +41,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     parseInt(currentPage, 10)
   );
 
+  const numberOfPagesByTag = await getNumberOfPagesByTag(upperCaseCurrentTag);
+
   return {
     props: {
       posts,
+      numberOfPagesByTag,
+      currentTag,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogTagPageList = ({ numberOfPage, posts }) => {
+const BlogTagPageList = ({ numberOfPagesByTag, posts, currentTag }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -78,7 +81,7 @@ const BlogTagPageList = ({ numberOfPage, posts }) => {
             </div>
           ))}
         </section>
-        <Pagination numberOfPage={numberOfPage} />
+        <Pagination numberOfPage={numberOfPagesByTag} tag={""} />
       </main>
     </div>
   );

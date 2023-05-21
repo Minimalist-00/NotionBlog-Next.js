@@ -1,12 +1,14 @@
+import { getPageLink } from "@/lib/blog-helper";
 import Link from "next/link";
 import React from "react";
 
 interface Props {
   numberOfPage: number;
+  tag: string;
 }
 
 const Pagination = (props: Props) => {
-  const { numberOfPage } = props;
+  const { numberOfPage, tag } = props;
 
   let pages: number[] = [];
   for (let i = 1; i <= numberOfPage; i++) {
@@ -17,7 +19,7 @@ const Pagination = (props: Props) => {
     <section className="mx-auto mb-8">
       <ul className="flex items-center justify-center gap-4">
         {pages.map((page) => (
-          <Link href={`posts/page/${page}`} key={page}>
+          <Link href={getPageLink(tag, page)} key={page}>
             <li className="bg-slate-400 w-6 h-8">{page}</li>
           </Link>
         ))}
