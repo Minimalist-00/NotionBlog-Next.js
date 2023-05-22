@@ -1,5 +1,6 @@
 import Pagination from "@/components/Pagination";
 import SinglePosts from "@/components/Posts/SinglePosts";
+import TagSearch from "@/components/TagSearch";
 import {
   getAllTags,
   getNumberOfPagesByTag,
@@ -9,7 +10,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const allTags = await getAllTags();
+  const allTags = await getAllTags(); //NotionAPIから全てのタグを取得した関数を呼び出す
   let params = [];
 
   //非同期処理を並列に処理できるようにする
@@ -42,18 +43,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
   );
 
   const numberOfPagesByTag = await getNumberOfPagesByTag(upperCaseCurrentTag);
+  const allTags = await getAllTags();
 
   return {
     props: {
       posts,
       numberOfPagesByTag,
-      currentTag,
+      allTags,
     },
     revalidate: 60 * 60,
   };
 };
 
-const BlogTagPageList = ({ numberOfPagesByTag, posts, currentTag }) => {
+const BlogTagPageList = ({ numberOfPagesByTag, posts, allTags }) => {
   return (
     <div className="container h-full w-full mx-auto">
       <Head>
@@ -82,6 +84,7 @@ const BlogTagPageList = ({ numberOfPagesByTag, posts, currentTag }) => {
           ))}
         </section>
         <Pagination numberOfPage={numberOfPagesByTag} tag={""} />
+        <TagSearch tags={allTags} />
       </main>
     </div>
   );

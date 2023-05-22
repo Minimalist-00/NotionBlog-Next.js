@@ -119,6 +119,7 @@ export const getPostsByTag = async (tagName: string, page: number) => {
   return posts.slice(startIndex, endIndex);
 };
 
+//タグページの全体のページ数を取得
 export const getNumberOfPagesByTag = async (tagName: string) => {
   const allPosts = await getAllPosts();
   const posts = allPosts.filter((post) =>
@@ -134,13 +135,14 @@ export const getNumberOfPagesByTag = async (tagName: string) => {
   );
 };
 
+// 全てのタグを取得
 export const getAllTags = async () => {
   const allPosts = await getAllPosts();
 
   const allTagsDuplicationLists = allPosts.flatMap((post) => post.tags);
   const set = new Set(allTagsDuplicationLists);
   const allTagsList = Array.from(set);
-  console.log(allTagsList);
+  // console.log(allTagsList);
 
   return allTagsList;
 };

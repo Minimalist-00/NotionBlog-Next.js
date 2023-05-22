@@ -12,7 +12,10 @@ const SinglePosts = (props) => {
           <div className="flex">
             <h2>{title}</h2>
             {tags.map((tag: string, index: number) => (
-              <span className="font-medium text-gray-700 bg-gray-300 px-2 rounded-xl inline-block">
+              <span
+                className="font-medium text-gray-700 bg-gray-300 px-2 rounded-xl inline-block"
+                key={index}
+              >
                 {tag}
               </span>
             ))}
@@ -25,7 +28,10 @@ const SinglePosts = (props) => {
           <div className="flex">
             <h2>{title}</h2>
             {tags.map((tag: string, index: number) => (
-              <span className="font-medium text-gray-700 bg-gray-300 px-2 mx-1 rounded-xl inline-block">
+              <span
+                className="font-medium text-gray-700 bg-gray-300 px-2 mx-1 rounded-xl inline-block"
+                key={index}
+              >
                 {tag}
               </span>
             ))}
